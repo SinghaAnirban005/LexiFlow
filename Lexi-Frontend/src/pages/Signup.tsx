@@ -4,18 +4,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { UserPlus } from 'lucide-react';
+import axios from 'axios';
 
-// const schema = z.object({
-//   email: z.string().email('Invalid email address'),
-//   password: z.string().min(6, 'Password must be at least 6 characters'),
-//   confirmPassword: z.string(),
-// }).refine((data) => data.password === data.confirmPassword, {
-//   message: "Passwords don't match",
-//   path: ["confirmPassword"],
-// });
 type SignUpForm = {
     email: string,
-    FullName: string,
+    full_name: string,
     username: string,
     password: string
 }
@@ -33,6 +26,13 @@ export function SignUp() {
   const onSubmit = async (data: SignUpForm) => {
     try {
     //   await dispatch(signUp({ email: data.email, password: data.password }));
+      const signupReq = await axios.post('http://127.0.0.1:8080/signup', {
+        email: data.email,
+        password: data.password,
+        full_name: data.full_name,
+        username: data.username
+      })
+      
       navigate('/signin');
     } catch (error) {
       console.error('Sign up failed:', error);
@@ -58,15 +58,15 @@ export function SignUp() {
 
           <Input
             label="Full Name"
-            name="fullname"
+            name="full_name"
             type="text"
             register={register}
-            error={errors.FullName?.message}
+            error={errors.full_name?.message}
           />
 
           <Input
             label="Username"
-            name="Username"
+            name="username"
             type="text"
             register={register}
             error={errors.username?.message}

@@ -5,7 +5,8 @@ const initialState = {
     personalDetail: {
         email: null,
         username: null,
-    }
+    },
+    conversations: [] as any
 }
 
 
@@ -18,16 +19,22 @@ const AISlice = createSlice({
             state.personalDetail = action.payload
         },
 
-        logout: (state, action) => {
+        logout: (state) => {
             state.status = false
             state.personalDetail = {
                 email: null,
                 username: null
             }
+        },
+
+        addConversation: (state, action) => {
+            if(state.status) {
+                state.conversations = [...state.conversations, action.payload]
+            }
         }
     }
 })
 
-export const { login, logout } = AISlice.actions
+export const { login, logout, addConversation } = AISlice.actions
 
 export default AISlice.reducer

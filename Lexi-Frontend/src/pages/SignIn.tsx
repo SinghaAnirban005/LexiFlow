@@ -6,6 +6,7 @@ import { login } from '../store/Slice';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { LogIn } from 'lucide-react';
+import axios from "axios"
 
 type SignInForm = {
     email: string,
@@ -25,7 +26,18 @@ export function SignIn() {
 
   const onSubmit = async (data: SignInForm) => {
     try {
-      await dispatch(login(data));
+      const loginReq = await axios.post('http://127.0.0.1:8080/login', {
+        email: data.email,
+        password: data.password
+      })
+
+      const userData = loginReq.data
+      localStorage.setItem("token", userData.token)
+      await dispatch(login({
+        email: userData.email,
+        username: userData.username
+      }));
+
       navigate('/home');
     } catch (error) {
       console.error('Sign in failed:', error);

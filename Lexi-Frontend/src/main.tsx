@@ -8,6 +8,7 @@ import { LandingPage } from './pages/LandingPage.tsx'
 import { SignIn } from './pages/SignIn.tsx'
 import { SignUp } from './pages/Signup.tsx'
 import { Provider } from 'react-redux'
+import {Home} from './pages/Home.tsx'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />
+      },
+      {
+        path: "/home",
+        element: <Home />
       }
     ]
   }
