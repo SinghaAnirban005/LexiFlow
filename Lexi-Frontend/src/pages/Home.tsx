@@ -1,19 +1,46 @@
-import React, { useState } from 'react';
+// Home.tsx
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, MessageSquare, LogOut } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Dialog } from '../components/Dialog';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Header } from '../components/Header';
 import axios from 'axios';
-import { addConversation } from '../store/Slice';
+import { ConversationCard } from '../components/ConversationCard';
+import { addConversation, setConversations } from '../store/Slice';
 
 export function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  // Get conversations from Redux store
+  const conversations = useSelector((state: any) => state.conversations);
+  const token = localStorage.getItem("token");
+
+  // Fetch conversations on component mount
+  useEffect(() => {
+    const getConvo = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8080/api/conversations', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        dispatch(setConversations(response.data));
+      } catch (error) {
+        console.error('Failed to fetch conversations:', error);
+      }
+    };
+
+    if (token) {
+      getConvo();
+    }
+  }, [dispatch, token]);
 
   type ConversationForm = {
     title: string
@@ -24,24 +51,24 @@ export function Home() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ConversationForm>({
-  });
+  } = useForm<ConversationForm>();
+
+  const handleOpenConversation = (id: string) => {
+    navigate(`/conversation/${id}`);
+  };
 
   const onSubmit = async (data: ConversationForm) => {
-    const token = localStorage.getItem('token');
     try {
-      const convo = await axios.post('http://127.0.0.1:8080/api/conversations', {
+      const response = await axios.post('http://127.0.0.1:8080/api/conversations', {
         title: data.title
       }, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
-      })
-      dispatch(addConversation({
-        id: convo.data.id,
-        title: convo.data.title
-      }))
+      });
+      
+      dispatch(addConversation(response.data));
       setIsDialogOpen(false);
       reset();
     } catch (error) {
@@ -64,11 +91,22 @@ export function Home() {
           </Button>
         </div>
 
-        <div className="grid gap-4">
-          {/* Conversations will be listed here */}
-          <div className="text-gray-400 text-center py-8">
-            No conversations yet. Start by creating a new one!
-          </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {conversations.length > 0 ? (
+            conversations.map((conversation: any) => (
+              <ConversationCard
+                key={conversation.id}
+                // id={conversation.id}
+                title={conversation.title}
+                onDelete={() => console.log('deleted')}
+                onClick={() => handleOpenConversation(conversation.id)}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-gray-400 text-center py-8">
+              No conversations yet. Start by creating a new one!
+            </div>
+          )}
         </div>
 
         <Dialog
@@ -81,6 +119,7 @@ export function Home() {
               label="Conversation Title"
               name="title"
               register={register}
+              required
               error={errors.title?.message}
               placeholder="Enter a title for your conversation"
             />

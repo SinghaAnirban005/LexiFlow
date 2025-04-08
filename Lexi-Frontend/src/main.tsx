@@ -9,6 +9,7 @@ import { SignIn } from './pages/SignIn.tsx'
 import { SignUp } from './pages/Signup.tsx'
 import { Provider } from 'react-redux'
 import {Home} from './pages/Home.tsx'
+import { Conversation } from './pages/Conversation.tsx'
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home />
+      },
+      {
+        path: "/conversation/:id",
+        element: <Conversation />
       }
     ]
   }

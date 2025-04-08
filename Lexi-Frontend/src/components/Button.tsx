@@ -2,11 +2,11 @@ import React from 'react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface ButtonProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?: 'primary' | 'ghost';
   //@ts-ignore
   icon?: LucideIcon;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   styles?: any,
   type?: "submit" | "reset" | "button" | undefined
 }
