@@ -28,29 +28,6 @@ export function Conversation() {
   const dispatch = useDispatch();
   const prompts = useSelector((state: any) => state.userPrompts);
 
-  useEffect(() => {
-    const getPrompts = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(`http://127.0.0.1:8080/api/prompts/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        dispatch(setUserPrompts(response.data.prompts));
-      } catch (error) {
-        toast.error("Failed to load conversation");
-        console.error("Error fetching prompts:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (token && id) {
-      getPrompts();
-    }
-  }, [dispatch, token, id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,6 +71,14 @@ export function Conversation() {
   
       dispatch(addUserPromptWithResponse(formattedPrompt));
       setInput('');
+
+      const rp = await axios.get(`http://127.0.0.1:8080/api/prompts/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      dispatch(setUserPrompts(rp.data.prompts));
     } catch (error) {
       toast.error("Failed to send message");
       console.error("Error sending prompt:", error);
@@ -101,6 +86,31 @@ export function Conversation() {
       setIsLoading(false);
     }
   };
+
+  
+  useEffect(() => {
+    const getPrompts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`http://127.0.0.1:8080/api/prompts/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        dispatch(setUserPrompts(response.data.prompts));
+      } catch (error) {
+        toast.error("Failed to load conversation");
+        console.error("Error fetching prompts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (token && id) {
+      getPrompts();
+    }
+  }, [dispatch, token, id]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-900">

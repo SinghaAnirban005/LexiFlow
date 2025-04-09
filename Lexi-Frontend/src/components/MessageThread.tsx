@@ -25,7 +25,6 @@ interface MessageThreadProps {
 }
 
 export function MessageThread({ prompts }: MessageThreadProps) {
-
   const messages: Message[] = prompts.flatMap((prompt) => {
     const userMessage: Message = {
       id: prompt.id,

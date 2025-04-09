@@ -61,6 +61,7 @@ const AISlice = createSlice({
                 username: null
             };
             state.conversations = [];
+            state.userPrompts = []
         },
 
         addConversation: (state, action: PayloadAction<Conversation>) => {
@@ -84,16 +85,13 @@ const AISlice = createSlice({
 
         addUserPromptWithResponse: (state, action: PayloadAction<Prompt>) => {
             if (state.status) {
-              // Check if this is an update to an optimistic prompt
               const existingIndex = state.userPrompts.findIndex(
                 p => p.id === action.payload.id
               );
               
               if (existingIndex >= 0) {
-                // Replace optimistic prompt with real data
                 state.userPrompts[existingIndex] = action.payload;
               } else {
-                // Add new prompt
                 state.userPrompts.push(action.payload);
               }
             }
