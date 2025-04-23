@@ -32,7 +32,8 @@ interface AIState {
     status: boolean;
     personalDetail: PersonalDetail;
     conversations: Conversation[];
-    userPrompts: Prompt[]
+    userPrompts: Prompt[],
+    userBookmarks: any[]
 }
 
 const initialState: AIState = {
@@ -42,7 +43,8 @@ const initialState: AIState = {
         username: null,
     },
     conversations: [],
-    userPrompts: []
+    userPrompts: [],
+    userBookmarks: []
 }
 
 const AISlice = createSlice({
@@ -83,6 +85,19 @@ const AISlice = createSlice({
             }
         },
 
+        setUserBookmarks: (state, action) => {
+            if (state.status) {
+                state.userBookmarks = action.payload;
+            }
+        },
+
+        addBookmark: (state, action) => {
+            if (state.status) {
+                console.log(action.payload)
+                state.userBookmarks.push(action.payload);
+            }
+        },
+
         addUserPromptWithResponse: (state, action: PayloadAction<Prompt>) => {
             if (state.status) {
               const existingIndex = state.userPrompts.findIndex(
@@ -107,5 +122,5 @@ const AISlice = createSlice({
     }
 });
 
-export const { login, logout, addConversation, setConversations, setUserPrompts, addUserPromptWithResponse, clearPrompts } = AISlice.actions;
+export const { login, logout, addConversation, setConversations, setUserPrompts, addUserPromptWithResponse, clearPrompts, setUserBookmarks, addBookmark } = AISlice.actions;
 export default AISlice.reducer;

@@ -11,6 +11,7 @@ import { Header } from '../components/Header';
 import axios from 'axios';
 import { ConversationCard } from '../components/ConversationCard';
 import { addConversation, setConversations } from '../store/Slice';
+import { setUserBookmarks, addBookmark } from '../store/Slice';
 
 export function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -39,6 +40,16 @@ export function Home() {
       getConvo();
     }
   }, [dispatch, token]);
+  
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   type ConversationForm = {
     title: string
@@ -84,12 +95,42 @@ export function Home() {
           "Content-Type": 'application/json'
         },
       })
+      // console.log(req.data)
+      const response = await axios.get('http://127.0.0.1:8080/api/bookmark', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
+      dispatch(setUserBookmarks(response.data));
       alert('Bookmarked Successfully')
+      
     } catch (error) {
       console.error(error)
     }
   }
+  useEffect(() => {
+    const getBookmark = async () => {
+      try {
+        console.log('hello')
+        const response = await axios.get('http://127.0.0.1:8080/api/bookmark', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(response.data)
+        dispatch(setUserBookmarks(response.data));
+      } catch (error) {
+        console.error('Failed to fetch conversations:', error);
+      }
+    };
+
+    if (token) {
+      getBookmark();
+    }
+  }, [dispatch, token, handleBookmark]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
@@ -112,6 +153,7 @@ export function Home() {
               <ConversationCard
                 key={conversation.id}
                 // id={conversation.id}
+                createdAt={formatDate(conversation.created_at)}
                 title={conversation.title}
                 onDelete={() => console.log('deleted')}
                 onClick={() => handleOpenConversation(conversation.id)}

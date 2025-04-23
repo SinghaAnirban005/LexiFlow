@@ -1,4 +1,3 @@
-import React from 'react';
 import { MessageSquare, Clock, Trash2, Bookmark } from 'lucide-react';
 import { Button } from './Button';
 

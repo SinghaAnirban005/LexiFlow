@@ -10,6 +10,7 @@ import { SignUp } from './pages/Signup.tsx'
 import { Provider } from 'react-redux'
 import {Home} from './pages/Home.tsx'
 import { Conversation } from './pages/Conversation.tsx'
+import { BookmarkedConversations } from './pages/BookmarkedConversations.tsx'
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "/conversation/:id",
         element: <Conversation />
+      },
+      {
+        path: "/bookmarks",
+        element: <BookmarkedConversations />
       }
     ]
   }

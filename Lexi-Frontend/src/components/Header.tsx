@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, LogIn, UserPlus, LogOut } from 'lucide-react';
+import { MessageSquare, LogIn, UserPlus, LogOut, Bookmark } from 'lucide-react';
 import { Button } from './Button';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,9 +36,18 @@ export function Header() {
               <MessageSquare className="h-8 w-8 text-blue-500" />
               <span className="text-2xl font-bold text-white">LucidFlow</span>
             </div>
-            <Button variant="ghost" icon={LogOut} onClick={handleLogout}>
-              Logout
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                icon={Bookmark}
+                onClick={() => navigate('/bookmarks')}
+              >
+                Bookmarks
+              </Button>
+              <Button variant="ghost" icon={LogOut} onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
