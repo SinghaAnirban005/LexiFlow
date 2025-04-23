@@ -1,6 +1,6 @@
 // Home.tsx
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
@@ -16,12 +16,10 @@ export function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  // Get conversations from Redux store
+
   const conversations = useSelector((state: any) => state.conversations);
   const token = localStorage.getItem("token");
 
-  // Fetch conversations on component mount
   useEffect(() => {
     const getConvo = async () => {
       try {
@@ -76,6 +74,23 @@ export function Home() {
     }
   };
 
+  const handleBookmark = async(convoID: string) => {
+    try {
+      const req = await axios.post('http://127.0.0.1:8080/api/bookmark', {
+        conversation_id: convoID
+      }, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": 'application/json'
+        },
+      })
+
+      alert('Bookmarked Successfully')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <Header />
@@ -100,6 +115,8 @@ export function Home() {
                 title={conversation.title}
                 onDelete={() => console.log('deleted')}
                 onClick={() => handleOpenConversation(conversation.id)}
+                isBookmarked={false}
+                onBookmark={() => handleBookmark(conversation.id)}
               />
             ))
           ) : (

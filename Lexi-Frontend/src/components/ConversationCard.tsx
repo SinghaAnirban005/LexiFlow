@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Clock, Trash2 } from 'lucide-react';
+import { MessageSquare, Clock, Trash2, Bookmark } from 'lucide-react';
 import { Button } from './Button';
 
 interface ConversationCardProps {
@@ -7,7 +7,9 @@ interface ConversationCardProps {
   lastMessage?: string;
   createdAt?: string;
   messageCount?: number;
+  isBookmarked: boolean;
   onDelete: () => void;
+  onBookmark: () => void;
   onClick: () => void;
 }
 
@@ -16,7 +18,9 @@ export function ConversationCard({
   lastMessage="",
   createdAt="",
   messageCount=0,
+  isBookmarked,
   onDelete,
+  onBookmark,
   onClick,
 }: ConversationCardProps) {
   return (
@@ -28,15 +32,26 @@ export function ConversationCard({
         <h3 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">
           {title}
         </h3>
-        <Button
-          variant="ghost"
-          icon={Trash2}
-          onClick={(e: any) => {
-            e.stopPropagation();
-            onDelete();
-          }}
-          styles="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-400"
-        />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            icon={Bookmark}
+            onClick={(e) => {
+              e.stopPropagation();
+              onBookmark();
+            }}
+            styles={`transition-colors ${isBookmarked ? 'text-blue-400' : 'text-gray-400 hover:text-blue-400'}`}
+          />
+          <Button
+            variant="ghost"
+            icon={Trash2}
+            onClick={(e: any) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            styles="text-gray-400 hover:text-red-400"
+          />
+        </div>
       </div>
       
       {lastMessage && (
